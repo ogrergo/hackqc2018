@@ -10,12 +10,15 @@ import json
 
 metadata_file = 'datasets_metadata.json'
 
-def extract_datasets(root):
+def extract_datasets(root, dtypes):
+
+    print("Downloading datasets to '{}' of types [{}]".format(root, ", ".join(dtypes)))
+
     for dataset in tqdm(metadata.values()):
         name = re.sub('/', '', dataset['title'].lower())
 
         for dtype, urls in dataset['urls'].items():
-            if dtype not in ('csv', 'shp',):
+            if dtype not in dtypes:
                 continue
 
             dataset_folder = os.path.join(root, '{}'.format(dtype))
@@ -40,13 +43,15 @@ def extract_datasets(root):
 
 
 if __name__ == '__main__':
-    import sys
-    if len(sys.argv) < 3:
-        print("Usage: python extract_datasets.py metadata_file out_folder")
-        sys.exit(1)
+    import argparse
+    parser = argparse.ArgumentParser(description='Download datasets of the openquebec from a metadata file')
+    parser.add_argument('metadata_file', type=str, help='the file describing the datasets. Generated from scrap_openquebec.py')
+    parser.add_argument('outfolder', type=str, help="The output dir where the datasaets are going to be downloaded.")
 
+    parser.add_argument('--dtypes', type=str, nargs='+', help='the dtype to download.', default=['csv'])
 
-    with open(sys.argv[1]) as fp:
+    args = parser.parse_args()
+    with open(args.metadata_file) as fp:
         metadata = json.load(fp)
 
-    extract_datasets(root=sys.argv[2])
+    extract_datasets(root=args.outfolder, dtypes=args.dtypes)
