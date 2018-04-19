@@ -25,8 +25,9 @@ def extract_datasets(root, dtypes):
             os.makedirs(dataset_folder, exist_ok=True)
 
             for i, url in enumerate(urls):
-                filename = "{name}.{counter}.{dtype}".format(
+                filename = "{name} ({url_filename}).{counter}.{dtype}".format(
                     name=name,
+                    url_filename=os.path.basename(url),
                     counter=i,
                     dtype=dtype
                 )
