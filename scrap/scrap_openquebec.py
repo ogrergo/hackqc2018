@@ -4,7 +4,7 @@ from collections import defaultdict
 from selenium import webdriver
 from urllib.parse import urlencode
 from tqdm import tqdm
-
+from itertools import count
 
 def scrap(tags=None):
     options = webdriver.FirefoxOptions()
@@ -18,11 +18,13 @@ def scrap(tags=None):
     else:
         filters = ""
 
-    for i in tqdm(range(1, 5), "scrapping datasets list"):
+    for i in tqdm(count(1), "scrapping datasets list"):
         browser.get('https://www.donneesquebec.ca/recherche/fr/dataset?{filters}&page={page}'.format(page=i, filters=filters))
 
         xpath = '/html/body/div/div[6]/div[3]/div[2]/section/div[1]/div[position() >= 2]/div/h2/a'
         dataset_entries += [e.get_attribute('href') for e in browser.find_elements_by_xpath(xpath)]
+        if not browser.find_elements_by_xpath("//div/ul/li/a/span[text()='Page suivante ']"):
+            break
 
     datasets = {}
 
