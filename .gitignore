@@ -5,3 +5,10 @@ data
 .ipynb_checkpoints
 Untitled.ipynb
 map/bundle.js
+
+.python-version
+bin/
+lib/
+lib64
+pyvenv.cfg
+
