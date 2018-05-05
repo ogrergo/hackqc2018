@@ -2,6 +2,7 @@ from flask import Flask
 from flask import jsonify
 from flask import request
 from flask_pymongo import PyMongo
+from geojson import Feature, Point, FeatureCollection, dumps
 
 
 app = Flask(__name__)
@@ -37,8 +38,9 @@ def get_all_trees():
               "up_votes": tree["up_votes"],
               "down_votes": tree["down_votes"]
           })
-
-  return jsonify({'result': output})
+  
+  fc = FeatureCollection([Feature(geometry=Point(doc['loc']), properties=doc) for doc in output])
+  return dumps(fc)
 
 if __name__ == '__main__':
     app.run(debug=True)

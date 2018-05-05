@@ -4,3 +4,5 @@ requests
 jupyter
 Flask
 Flask-PyMongo
+pandas
+geojson

@@ -54,13 +54,13 @@ var popup = L.popup()
     .setLatLng(new L.LatLng(45.517711,-73.5966052))
     .setContent(`
 			<div>
-			<h3> 332 persons already voted to plant this tree !</h3>
-			<div style="display: flex; flex-direction: row; justify-content: center;">
-				<i class="fa fa-tree fa-2x"></i>
-				<p>Tree adress</p>
-			</div>
-			<p>What is the amount of money that can be saved</p>
-			<button>Vote for this tree</button>
+				<h3> 332 persons already voted to plant this tree !</h3>
+				<div style="display: flex; flex-direction: row; justify-content: center;">
+					<i class="fa fa-tree fa-2x"></i>
+					<p>Tree adress</p>
+				</div>
+				<p>What is the amount of money that can be saved</p>
+				<button>Vote for this tree</button>
 			</div>`)
     .openOn(map);
 
