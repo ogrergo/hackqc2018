@@ -26,5 +26,14 @@ L.geoJSON(trees,{
     return layer.feature.properties.type;
 }).addTo(map);
 
+
 map.panTo(new L.LatLng(45.517711,-73.5966052));
+
+L.tileLayer.wms("https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi", {
+    layers: 'inspq_ilot_chaleur',
+    format: 'image/tiff',
+    transparent: true,
+    // attribution: "Weather data © 2012 IEM Nexrad"
+}).addTo(map)
+
 // L.control.mousePosition().addTo(map);
