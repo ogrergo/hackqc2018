@@ -1,5 +1,6 @@
 from pymongo import MongoClient, GEO2D
 import pandas as pd
+from utils.entry_category import EntryCategory
 
 port = 27017
 host = 'localhost'
@@ -20,6 +21,7 @@ db.trees.insert_many([
     {'loc': list(lat_lon),
      'up_votes': 0,
      'down_votes': 0,
+     'entry_category': EntryCategory.TRUE_POSITIVE,
         **dict(zip(headers_lower, row))
     }
     for row, lat_lon in zip(dat[headers].values, dat[["Longitude", "Latitude"]].values)])
