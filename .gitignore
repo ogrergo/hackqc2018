@@ -1,7 +1,7 @@
 venv/
 .idea
-data
 map/data
+*.csv
 .ipynb_checkpoints
 Untitled.ipynb
 map/bundle.js

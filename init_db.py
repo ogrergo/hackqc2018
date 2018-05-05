@@ -1,10 +1,10 @@
 from pymongo import MongoClient, GEO2D
 import pandas as pd
-from utils.entry_category import EntryCategory
+from utils.entry_status import EntryStatus
 
 port = 27017
 host = 'localhost'
-csv_path = "../data/arbres-publics.csv"
+csv_path = "data/arbres-publics.csv"
 
 db = MongoClient(host=host, port=port)['hackqc-2018']
 db.trees.create_index([("loc", GEO2D)])
@@ -21,7 +21,7 @@ db.trees.insert_many([
     {'loc': list(lat_lon),
      'up_votes': 0,
      'down_votes': 0,
-     'entry_category': EntryCategory.TRUE_POSITIVE,
+     'entry_status': EntryStatus.TRUE_POSITIVE.value,
         **dict(zip(headers_lower, row))
     }
     for row, lat_lon in zip(dat[headers].values, dat[["Longitude", "Latitude"]].values)])
