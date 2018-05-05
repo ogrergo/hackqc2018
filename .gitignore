@@ -1,5 +1,6 @@
 venv/
 .idea
+data
 map/data
 .ipynb_checkpoints
 Untitled.ipynb
