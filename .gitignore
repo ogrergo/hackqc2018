@@ -1,11 +1,10 @@
 venv/
 .idea
-map/data
 data
+map/data
 .ipynb_checkpoints
 Untitled.ipynb
 map/bundle.js
-
 .python-version
 bin/
 lib/
