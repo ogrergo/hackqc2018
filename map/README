@@ -1,0 +1,5 @@
+# requirements:
+browserify
+
+to build:
+browserify src/main.js > bundle.js
