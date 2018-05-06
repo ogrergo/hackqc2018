@@ -4,10 +4,6 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
 
-		<meta http-equiv="refresh" content="./map.html/" />
-
-
-
 		<title>PoTree</title>
 
 		<!-- Bootstrap CSS -->
@@ -22,23 +18,30 @@
 
 	</head>
 		<body>
-			<div class="container-space">
+			<div class="container">
 				<!-- nav bar -->
 					<nav class="navbar navbar-default">
 						<div class="container">
 							<div class="navbar-header navbar-left">
 								<!-- logo -->
-								<a href="./map.html"><img class="img-logo" width="100px" src="./images/u1.svg"></a>
+								<img class="img-logo" width="100px" src="./images/u1.svg">
 							</div>
-							<div><i>Root for a tree !</i></div>
 							<div class="navbar-header navbar-right">
 								<img id="u72_img" class="img " src="./images/u72.jpg" tabindex="0">
 							</div>				
 						</div>
 					</nav>
 
+					<div class="parallax">
+						<div class="bgimg-1">
+							<div class="caption">
+								<span class="border">PLUS D'ARBRES POUR MOINS DE CHALEUR</span>
+							</div>
+						</div>
+					</div>
+
 				<!-- presentation -->
-				<div class="container-space">
+				<div class="container">
 					<div class="row">
 						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 							<div class="page-header">
@@ -49,12 +52,14 @@
 							<p>
 								Nous regroupons les opinions citoyennes concernant la v&eacute;g&eacute;tation de leur quartiers.
 							</p>
-
+							<p>
+								Shrinking heat islands are cool ! Root for a tree !
+							</p>
 							<!-- buttons -->
 							<div class="row">
 								<div class="btn-group btn-group" role="group">
-									<a href="./map.html" type="button" class="btn btn-outline-success">Luttons contre les &icirc;lots de chaleur !</a>
-									<a href="http://www.irec.net/index.jsp?p=28&f=1608" type="button" class="btn btn-outline-success">Pourquoi planter un arbre ?</a>
+									<button type="button" class="btn btn-outline-success">Votez pour un arbre.</button>
+									<button type="button" class="btn btn-outline-success">Pourquoi planter un arbre?</button>
 								</div>
 							</div>
 						</div>
@@ -62,14 +67,33 @@
 						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 							<!-- Image -->
 							<div id="u41" >
-								<a href="./map.html" d="u41_img" class="img" width="80%" src="./images/u41.jpg"><img id="u41_img" class="img" width="80%" src="./images/u41.jpg"></a>
+								<img id="u41_img" class="img" width="80%" src="./images/u41.jpg">
 							</div>
 						</div>
 					</div>
 				</div>
+
 				
+
+				<!-- Map -->
+				<div class="container">
+					<p class="text-center" style="color:#579600">Choisissez votre secteur:</p>
+					<img id="u91_img" class="img " src="./images/u91.png">
+				</div>
+				<div class="container-fluid">
+					<div id="map_canvas" class="map_canvas">
+					</div>
+				</div>
+				<footer class="navbar-default navbar-fixed-bottom">
+					<div class="row">
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+							<p>stuff</p>
+						</div>
+					</div>
+				</footer>
+
 				<!-- Reasons -->
-				<div class="container-spacy">
+				<div class="container">
 					<h4 class="text-center" style="color:#579600">Les &icirc;lots de chaleur sont une nuisance :</h4>
 				</div>
 				<div class="container-fluid">
@@ -77,7 +101,7 @@
 						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 							<!-- 1 -->
 							<div id="u11" class=" text-center">
-								<img id="u11_img" class="img round" src="./images/u102.png" width="35%">
+								<img id="u11_img" class="img round" src="./images/u11.png">
 							</div>
 							<p class="text-center" style="color:#7a7a7a">
 								Ils causent de la pollution et diminuent la qualit&eacute; de l'air.
@@ -85,7 +109,7 @@
 
 							<!-- 2 -->
 							<div id="u11" class="text-center">
-								<img id="u11_img" class="img round" src="./images/u104.png" width="35%">
+								<img id="u11_img" class="img round" src="./images/u11.png">
 							</div>
 							<p class="text-center" style="color:#7a7a7a">
 								Ils causent des probl&egrave;mes de sant&eacute; d&ucirc;s &agrave; la chaleur.
@@ -95,7 +119,7 @@
 						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 							<!-- 3 -->
 							<div id="u11" class="text-center">
-								<img id="u11_img" class="img round" src="./images/u103.png" width="35%">
+								<img id="u11_img" class="img round" src="./images/u11.png">
 							</div>
 							<p class="text-center" style="color:#7a7a7a">
 								Ils causent des alergies et des probl&egrave;mes de sant&eacute; d&ucirc;s &agrave; la qualit&egrave; de l'air.
@@ -103,7 +127,7 @@
 							
 							<!-- 4 -->
 							<div id="u11" class="text-center">
-								<img id="u11_img" class="img round" src="./images/u17.png" width="35%">
+								<img id="u11_img" class="img round" src="./images/u11.png">
 							</div>
 							<p class="text-center" style="color:#7a7a7a">
 								Ils augmentent le co&ucirc;t de la climatisation des domiciles entre 5 et 12%.
@@ -113,7 +137,7 @@
 						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 							<!-- 5 -->
 							<div id="u11" class="text-center">
-								<img id="u11_img" class="img round" src="./images/u101.png" width="35%">
+								<img id="u11_img" class="img round" src="./images/u11.png">
 							</div>
 							<p class="text-center" style="color:#7a7a7a">
 								Ils emp&ecirc;chent la r&eacute;tention naturelle de l'eau dans le sol.
@@ -121,10 +145,10 @@
 
 							<!-- 6 -->
 							<div id="u11" class="text-center">
-								<img id="u11_img" class="img round" src="./images/u100.png" width="35%">
+								<img id="u11_img" class="img round" src="./images/u11.png">
 							</div>
 							<p class="text-center" style="color:#7a7a7a">
-								Ils produisent un trou dans le budget public.
+								Ils forcent &agrave; r&eacute;aliser un recondissionnement contant et un trou dans le budget public.
 							</p>
 						</div>
 					</div>
@@ -132,7 +156,7 @@
 
 				<!-- buttons -->
 				<div class="container text-center">
-					<a href="./map.html" type="button" class="btn btn-outline-success">Luttons contre les &icirc;lots de chaleur !</a>
+					<button type="button" class="btn btn-outline-success">Votez pour un arbre.</button>
 				</div>
 
 				<!-- foot bar -->
