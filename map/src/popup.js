@@ -6,6 +6,8 @@ module.exports = (()=>{
     return     `
           <div>
             <button>Report missing tree</button>
+            <button>Suggest </button>
+
           </div>`
   }
   function build_tree(map, layer) {
@@ -16,7 +18,6 @@ module.exports = (()=>{
               <p style="margin: 10px;">${layer.feature.properties.tree_name_fr}</p>
             </div>
             <p>${layer.feature.properties.arrond_name}</p>
-            <p>${['lat', 'lon'].map((e, i)=>e + ':' +layer.feature.geometry.coordinates[i]).join(', ')}</p>
 
             <button>Report invalid tree</button>
           </div>`
@@ -24,7 +25,9 @@ module.exports = (()=>{
 
   function build_vote_popup(map, id, votes) {
     var container = document.createElement('div');
-    container.style = "display: flex; flex-direction: column; justify-content: center;"
+    container.style.display = 'flex'
+    container.style['flex-direction'] = 'column'
+    container.style['justify-content'] = 'center'
 
     var p = document.createElement('h3');
     p.innerHTML = 'This is a seed, vote if you want to see a tree here !'
@@ -42,6 +45,8 @@ module.exports = (()=>{
 
     var email = document.createElement('input')
     email.type = 'email'
+    email.style.width = '100%'
+    email.style['margin-top'] = '10px'
     email.placeholder = 'Write your email to follow this tree'
 
     info.appendChild(email)

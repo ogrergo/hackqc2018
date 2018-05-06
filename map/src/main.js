@@ -1,11 +1,39 @@
 var map = L.map('mapid').setView([45.5, -73.8], 18);
 
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+var street = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
 	maxZoom: 18,
 	id: 'mapbox.streets',
   accessToken: 'pk.eyJ1Ijoib2dyZWJ1cmRlbiIsImEiOiJjamdyYmdyaXMwMzBsMzJueDlwdjBjZXlpIn0.Rar0bZ870hpisFVD7XwRQw'
-}).addTo(map);
+})
+
+var googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+
+googleSat.addTo(map)
+street.addTo(map);
+
+
+var ilos = L.tileLayer.wms("https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi", {
+    layers: 'inspq_ilot_chaleur',
+    format: 'image/png',
+    transparent: true,
+    attribution: "Ilôts de chaleur © Données Quebec",
+		opacity: 0.6
+})
+
+
+var baseMaps = {
+    "Satelite": googleSat,
+    "Street": street
+};
+
+var heatmap = {
+	'Ilôts de chaleurs': ilos
+}
+L.control.layers(baseMaps, heatmap).addTo(map);
 
 // var trees = require('./trees.js')
 var geojsonMarkerOptions = {
@@ -37,19 +65,19 @@ for (var i = 0; i <4; i++) {
 	}));
 }
 
-map.on('click', e=> {
-	var latlng = e.latlng
-	// L.marker(latlng, {icon: proposal_icons[3],
-	// 									color: '#33ee44',
-	// 									transparency: 0.6
-	// 								}).addTo(map)
-
-	var popup = L.popup()
-		.setLatLng(latlng)
-		.setContent(popups.build_missing_tree(map))
-    .openOn(map);
-
-})
+// map.on('click', e=> {
+// 	var latlng = e.latlng
+// 	// L.marker(latlng, {icon: proposal_icons[3],
+// 	// 									color: '#33ee44',
+// 	// 									transparency: 0.6
+// 	// 								}).addTo(map)
+//
+// 	var popup = L.popup()
+// 		.setLatLng(latlng)
+// 		.setContent(popups.build_missing_tree(map))
+//     .openOn(map);
+//
+// })
 var proposal_layer;
 map.on('moveend', e => {
 	var bbox = map.getBounds()
@@ -109,15 +137,6 @@ map.on('moveend', e => {
 })
 
 map.panTo(new L.LatLng(45.517711,-73.5966052));
-
-L.tileLayer.wms("https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi", {
-    layers: 'inspq_ilot_chaleur',
-    format: 'image/png',
-    transparent: true,
-    attribution: "Ilôts de chaleur © Données Quebec",
-		opacity: 0.6
-}).addTo(map)
-
 
 const geocoder = require("geocoder/providers/google")
 var address_pin = null;
