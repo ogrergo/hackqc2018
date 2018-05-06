@@ -39547,7 +39547,7 @@ module.exports = (()=>{
             </div>
             <p>${layer.feature.properties.arrond_name}</p>
 
-            <button>Report invalid tree</button>
+            <button>Notifier une erreur</button>
           </div>`
   }
 
@@ -39558,15 +39558,15 @@ module.exports = (()=>{
     container.style['justify-content'] = 'center'
 
     var p = document.createElement('h3');
-    p.innerHTML = 'This is a seed, vote if you want to see a tree here !'
+    p.innerHTML = "C'est une graine, votez pour qu'un arbre soit planté ici !"
     container.appendChild(p)
 
     var p2 = document.createElement('p');
-    p2.innerHTML = `Current votes: ${votes}`
+    p2.innerHTML = `Nombre de votes : ${votes}`
     container.appendChild(p2)
 
     var button_for = document.createElement('button')
-    button_for.innerHTML = 'Vote for this tree'
+    button_for.innerHTML = 'Votez pour cet arbre'
     button_for.style = "margin: 10px;"
 
     var info = document.createElement('span')
@@ -39575,7 +39575,7 @@ module.exports = (()=>{
     email.type = 'email'
     email.style.width = '100%'
     email.style['margin-top'] = '10px'
-    email.placeholder = 'Write your email to follow this tree'
+    email.placeholder = 'Entrez votre email pour suivre cet arbre'
 
     info.appendChild(email)
 
