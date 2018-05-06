@@ -35,12 +35,12 @@ def get_trees():
               "loc": tree["loc"],
               "id": str(tree["_id"]),
               "arrond_name": tree.get("arrond_nom", ""),
-              "tree_name_en": tree["essence_ang"],
-              "tree_name_fr": tree["essence_fr"],
-              "entry_status": tree["entry_status"],
+              "tree_name_en": tree.get("essence_ang"),
+              "tree_name_fr": tree.get("essence_fr"),
+              "entry_status": tree.get("entry_status"),
               "dhp": tree.get("dhp", ""),
-              "up_votes": tree["up_votes"],
-              "down_votes": tree["down_votes"]
+              "up_votes": tree.get("up_votes"),
+              "down_votes": tree.get("down_votes")
           })
   
   fc = FeatureCollection([Feature(geometry=Point(doc['loc']), properties=doc) for doc in output])
@@ -130,15 +130,15 @@ def get_tree_proposals():
 
     for tree in proposals:
         res.append({
-              "loc": tree["loc"],
-              "id": str(tree["_id"]),
-              "arrond_name": tree["arrond_nom"],
-              "tree_name_en": tree["essence_ang"],
-              "tree_name_fr": tree["essence_fr"],
-              "entry_status": tree["entry_status"],
-              "dhp": tree["dhp"],
-              "up_votes": tree["up_votes"],
-              "down_votes": tree["down_votes"]
+              "loc": tree.get("loc"),
+              "id": str(tree.get("_id")),
+              "arrond_name": tree.get("arrond_nom"),
+              "tree_name_en": tree.get("essence_ang"),
+              "tree_name_fr": tree.get("essence_fr"),
+              "entry_status": tree.get("entry_status"),
+              "dhp": tree.get("dhp"),
+              "up_votes": tree.get("up_votes"),
+              "down_votes": tree.get("down_votes")
           })
 
     fc = FeatureCollection([Feature(geometry=Point(doc['loc']), properties=doc) for doc in res])

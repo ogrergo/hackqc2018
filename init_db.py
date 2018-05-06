@@ -22,6 +22,14 @@ if __name__ == "__main__":
         'DATE_PLANTE': 'date_plantation'
     }
 
+    rep_mtl = {
+        'Latitude': 'latitude',
+        'Longitude': 'longitude',
+        'ESSENCE_FR': 'essence_fr',
+        'ESSENCE_LATIN': 'essence_latin',
+        'DATE_PLANTATION': 'date_plantation'
+    }
+
     if ville == 'quebec':
         csv_path = "data/vdq-arbrerepertorie.csv"
         long_key = "LONGITUDE"
