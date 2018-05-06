@@ -1,5 +1,4 @@
-var map = L.map('mapid').setView([45.5, -73.8], 18);
-
+var map = L.map('mapid').setView([45.495, -73.568], 17)
 var street = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
 	maxZoom: 18,
@@ -12,7 +11,7 @@ var googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
     subdomains:['mt0','mt1','mt2','mt3']
 });
 
-googleSat.addTo(map)
+// googleSat.addTo(map)
 street.addTo(map);
 
 
@@ -25,16 +24,20 @@ var ilos = L.tileLayer.wms("https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi
 })
 
 
+// var vague_chaleur = L.
+// var vuln_chaleur = L.geoJSON(data)
+
 var baseMaps = {
     "Satelite": googleSat,
     "Street": street
 };
 
 var heatmap = {
-	'Ilôts de chaleurs': ilos
+	'Ilôts de chaleurs': ilos,
 }
-L.control.layers(baseMaps, heatmap).addTo(map);
 
+L.control.layers(baseMaps, heatmap).addTo(map);
+ilos.addTo(map)
 // var trees = require('./trees.js')
 var geojsonMarkerOptions = {
     radius: 3,
@@ -46,6 +49,7 @@ var geojsonMarkerOptions = {
 };
 const constants = require('./constants')
 
+map.setMaxBounds(L.latLngBounds(L.latLng( 43.3, -75.7), L.latLng(47.4, -68.3)))
 let tree_layer = null
 
 var models = require('./models.js')
@@ -65,19 +69,6 @@ for (var i = 0; i <4; i++) {
 	}));
 }
 
-// map.on('click', e=> {
-// 	var latlng = e.latlng
-// 	// L.marker(latlng, {icon: proposal_icons[3],
-// 	// 									color: '#33ee44',
-// 	// 									transparency: 0.6
-// 	// 								}).addTo(map)
-//
-// 	var popup = L.popup()
-// 		.setLatLng(latlng)
-// 		.setContent(popups.build_missing_tree(map))
-//     .openOn(map);
-//
-// })
 var proposal_layer;
 map.on('moveend', e => {
 	var bbox = map.getBounds()
@@ -88,7 +79,6 @@ map.on('moveend', e => {
 			tree_layer.clearLayers()
 	} else
 		models.get_trees_geojson(bbox).then(data => {
-
 		if (tree_layer)
 			tree_layer.clearLayers()
 
@@ -136,7 +126,6 @@ map.on('moveend', e => {
 
 })
 
-map.panTo(new L.LatLng(45.517711,-73.5966052));
 
 const geocoder = require("geocoder/providers/google")
 var address_pin = null;
@@ -163,5 +152,21 @@ document.getElementById('address').onchange = e => {
 			}
 	}, {key: constants.API_GOOGLE_KEYS});
 }
+map.fire('moveend')
+
+var enabled = false
+var button_add_tree = document.getElementById('addTree')
+button_add_tree.onclick = e => {
+	if (enabled) {
+		L.DomUtil.removeClass(map._container,'crosshair-cursor-enabled')
+		button_add_tree.innerHTML = 'Ajouter un arbre manquant'
+	} else {
+		L.DomUtil.addClass(map._container,'crosshair-cursor-enabled')
+		button_add_tree.innerHTML = 'Valider'
+	}
+
+	enabled = !enabled
+}
+
 // L.control.mousePosition(
 // L.control.mousePosition().addTo(map);

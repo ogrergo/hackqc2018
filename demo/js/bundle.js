@@ -38686,6 +38686,7 @@ WError.prototype.cause = function we_cause(c)
 module.exports = (()=> {
   return {
     SERVER_URL: 'https://potree.ml/api/',
+    // SERVER_URL: 'http://localhost:5000/',
     API_GOOGLE_KEYS: "AIzaSyA51p0T7yIJUk_FOXP2ansqHYVMXWqCrIY",
     ESSENCES_FR: ["Acer Miyabei",
                   "Acer freemanii 'Sienna'",
@@ -39288,15 +39289,46 @@ module.exports = (()=> {
 })()
 
 },{}],167:[function(require,module,exports){
-var map = L.map('mapid').setView([45.5, -73.8], 18);
-
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+var map = L.map('mapid').setView([45.495, -73.568], 17)
+var street = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
 	maxZoom: 18,
 	id: 'mapbox.streets',
   accessToken: 'pk.eyJ1Ijoib2dyZWJ1cmRlbiIsImEiOiJjamdyYmdyaXMwMzBsMzJueDlwdjBjZXlpIn0.Rar0bZ870hpisFVD7XwRQw'
-}).addTo(map);
+})
 
+var googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+
+// googleSat.addTo(map)
+street.addTo(map);
+
+
+var ilos = L.tileLayer.wms("https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi", {
+    layers: 'inspq_ilot_chaleur',
+    format: 'image/png',
+    transparent: true,
+    attribution: "Ilôts de chaleur © Données Quebec",
+		opacity: 0.6
+})
+
+
+// var vague_chaleur = L.
+// var vuln_chaleur = L.geoJSON(data)
+
+var baseMaps = {
+    "Satelite": googleSat,
+    "Street": street
+};
+
+var heatmap = {
+	'Ilôts de chaleurs': ilos,
+}
+
+L.control.layers(baseMaps, heatmap).addTo(map);
+ilos.addTo(map)
 // var trees = require('./trees.js')
 var geojsonMarkerOptions = {
     radius: 3,
@@ -39308,6 +39340,7 @@ var geojsonMarkerOptions = {
 };
 const constants = require('./constants')
 
+map.setMaxBounds(L.latLngBounds(L.latLng( 43.3, -75.7), L.latLng(47.4, -68.3)))
 let tree_layer = null
 
 var models = require('./models.js')
@@ -39327,19 +39360,6 @@ for (var i = 0; i <4; i++) {
 	}));
 }
 
-map.on('click', e=> {
-	var latlng = e.latlng
-	// L.marker(latlng, {icon: proposal_icons[3],
-	// 									color: '#33ee44',
-	// 									transparency: 0.6
-	// 								}).addTo(map)
-
-	var popup = L.popup()
-		.setLatLng(latlng)
-		.setContent(popups.build_missing_tree(map))
-    .openOn(map);
-
-})
 var proposal_layer;
 map.on('moveend', e => {
 	var bbox = map.getBounds()
@@ -39350,7 +39370,6 @@ map.on('moveend', e => {
 			tree_layer.clearLayers()
 	} else
 		models.get_trees_geojson(bbox).then(data => {
-
 		if (tree_layer)
 			tree_layer.clearLayers()
 
@@ -39398,16 +39417,6 @@ map.on('moveend', e => {
 
 })
 
-map.panTo(new L.LatLng(45.517711,-73.5966052));
-
-L.tileLayer.wms("https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi", {
-    layers: 'inspq_ilot_chaleur',
-    format: 'image/png',
-    transparent: true,
-    attribution: "Ilôts de chaleur © Données Quebec",
-		opacity: 0.6
-}).addTo(map)
-
 
 const geocoder = require("geocoder/providers/google")
 var address_pin = null;
@@ -39434,6 +39443,22 @@ document.getElementById('address').onchange = e => {
 			}
 	}, {key: constants.API_GOOGLE_KEYS});
 }
+map.fire('moveend')
+
+var enabled = false
+var button_add_tree = document.getElementById('addTree')
+button_add_tree.onclick = e => {
+	if (enabled) {
+		L.DomUtil.removeClass(map._container,'crosshair-cursor-enabled')
+		button_add_tree.innerHTML = 'Ajouter un arbre manquant'
+	} else {
+		L.DomUtil.addClass(map._container,'crosshair-cursor-enabled')
+		button_add_tree.innerHTML = 'Valider'
+	}
+
+	enabled = !enabled
+}
+
 // L.control.mousePosition(
 // L.control.mousePosition().addTo(map);
 
@@ -39509,6 +39534,8 @@ module.exports = (()=>{
     return     `
           <div>
             <button>Report missing tree</button>
+            <button>Suggest </button>
+
           </div>`
   }
   function build_tree(map, layer) {
@@ -39519,7 +39546,6 @@ module.exports = (()=>{
               <p style="margin: 10px;">${layer.feature.properties.tree_name_fr}</p>
             </div>
             <p>${layer.feature.properties.arrond_name}</p>
-            <p>${['lat', 'lon'].map((e, i)=>e + ':' +layer.feature.geometry.coordinates[i]).join(', ')}</p>
 
             <button>Report invalid tree</button>
           </div>`
@@ -39527,7 +39553,9 @@ module.exports = (()=>{
 
   function build_vote_popup(map, id, votes) {
     var container = document.createElement('div');
-    container.style = "display: flex; flex-direction: column; justify-content: center;"
+    container.style.display = 'flex'
+    container.style['flex-direction'] = 'column'
+    container.style['justify-content'] = 'center'
 
     var p = document.createElement('h3');
     p.innerHTML = 'This is a seed, vote if you want to see a tree here !'
@@ -39545,6 +39573,8 @@ module.exports = (()=>{
 
     var email = document.createElement('input')
     email.type = 'email'
+    email.style.width = '100%'
+    email.style['margin-top'] = '10px'
     email.placeholder = 'Write your email to follow this tree'
 
     info.appendChild(email)
@@ -39559,7 +39589,10 @@ module.exports = (()=>{
     // container.appendChild(button_against)
 
     button_for.onclick = function(e) {
-      models.vote_tree(id).then(() => map.fire('moveend'))
+      models.vote_tree(id).then(() => {
+        map.fire('moveend')
+        map.closePopup()
+      })
       // var essence = select.options[select.selectedIndex].value
       // models.plant_tree(latlng, essence).then(data => {
       //

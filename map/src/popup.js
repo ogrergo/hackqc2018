@@ -61,7 +61,10 @@ module.exports = (()=>{
     // container.appendChild(button_against)
 
     button_for.onclick = function(e) {
-      models.vote_tree(id).then(() => map.fire('moveend'))
+      models.vote_tree(id).then(() => {
+        map.fire('moveend')
+        map.closePopup()
+      })
       // var essence = select.options[select.selectedIndex].value
       // models.plant_tree(latlng, essence).then(data => {
       //

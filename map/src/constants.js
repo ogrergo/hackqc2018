@@ -1,6 +1,7 @@
 module.exports = (()=> {
   return {
-    SERVER_URL: 'http://localhost:5000/',
+    SERVER_URL: 'https://potree.ml/api/',
+    // SERVER_URL: 'http://localhost:5000/',
     API_GOOGLE_KEYS: "AIzaSyA51p0T7yIJUk_FOXP2ansqHYVMXWqCrIY",
     ESSENCES_FR: ["Acer Miyabei",
                   "Acer freemanii 'Sienna'",
