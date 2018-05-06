@@ -38685,7 +38685,7 @@ WError.prototype.cause = function we_cause(c)
 },{"assert-plus":47,"core-util-is":56,"extsprintf":62,"util":352}],166:[function(require,module,exports){
 module.exports = (()=> {
   return {
-    SERVER_URL: 'http://localhost:5000/',
+    SERVER_URL: 'https://potree.ml/api/',
     API_GOOGLE_KEYS: "AIzaSyA51p0T7yIJUk_FOXP2ansqHYVMXWqCrIY",
     ESSENCES_FR: ["Acer Miyabei",
                   "Acer freemanii 'Sienna'",
