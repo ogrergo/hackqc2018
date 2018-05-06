@@ -1,12 +1,16 @@
 from pymongo import MongoClient, GEO2D
 import pandas as pd
 from utils.entry_status import EntryStatus
-
-
-ville = 'quebec'
+import argparse
 
 if __name__ == "__main__":
 
+    parser = argparse.ArgumentParser(description='Populate MongoDB')
+    parser.add_argument('-c', '--city', required=True, help='City from which to take data', default='mtl',
+                        choices=['qc', 'mtl', 'rep'])
+
+    args = parser.parse_args()
+    ville = args.city
     port = 27017
     host = 'localhost'
     db = MongoClient(host=host, port=port)['hackqc-2018']
@@ -30,15 +34,25 @@ if __name__ == "__main__":
         'DATE_PLANTATION': 'date_plantation'
     }
 
-    if ville == 'quebec':
+    if ville == 'quebec' or ville == 'all':
         csv_path = "data/vdq-arbrerepertorie.csv"
+        dat = pd.read_csv(csv_path)
         long_key = "LONGITUDE"
         lat_key = "LATITUDE"
         headers = ['TYPE_LIEU', 'NOM_LATIN', 'NOM_FRANCAIS', 'DATE_PLANTE', 'LATITUDE', 'LONGITUDE', 'NOM_TOPOGRAPHIE']
         headers_lower = [qc_mtl[h] for h in headers]
         city = 'QC'
+    elif ville == 'rep' or ville == 'all':
+        csv_path = "data/arbres.csv"
+        dat = pd.read_csv(csv_path, encoding='latin-1')
+        headers = ['ESSENCE_FR', 'ESSENCE_LATIN', 'Latitude', 'Longitude', 'DATE_PLANTATION']
+        headers_lower = [rep_mtl[h] for h in headers]
+        long_key = "Longitude"
+        lat_key = "Latitude"
+        city = 'REP'
     else:
         csv_path = "data/arbres-publics.csv"
+        dat = pd.read_csv(csv_path)
         headers = ["ARROND", "ARROND_NOM", "Emplacement", "SIGLE", "Essence_latin", "Essence_fr", "ESSENCE_ANG",
                    "DHP", "Date_releve", "Date_plantation", "NOM_PARC", "CODE_PARC"]
         headers_lower = [h.lower() for h in headers]
@@ -46,7 +60,6 @@ if __name__ == "__main__":
         lat_key = "Latitude"
         city = "MTL"
 
-    dat = pd.read_csv(csv_path)
     dat = dat.dropna(subset=[long_key, lat_key])
 
     db.trees.insert_many([
