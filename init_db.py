@@ -16,7 +16,6 @@ headers = ["ARROND", "ARROND_NOM", "Emplacement", "SIGLE", "Essence_latin", "Ess
 headers_lower = [h.lower() for h in headers]
 
 
-
 db.trees.insert_many([
     {'loc': list(lat_lon),
      'up_votes': 0,

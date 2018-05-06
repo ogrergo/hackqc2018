@@ -38,6 +38,7 @@ def get_trees():
               "tree_name_en": tree["essence_ang"],
               "tree_name_fr": tree["essence_fr"],
               "entry_status": tree["entry_status"],
+              "dhp": tree["dhp"],
               "up_votes": tree["up_votes"],
               "down_votes": tree["down_votes"]
           })
