@@ -31,42 +31,38 @@ let tree_layer = null
 // tree_layer.addTo(map);
 
 var models = require('./models.js')
-
+const popups = require('./popup.js')
 // map.on('zoomend', e=> {
 //
 // })
-var greenIcon = L.icon({
-    iconUrl: 'data/img/plant-pot0.svg',
-    shadowUrl:  'data/img/plant-pot0.svg',
+proposal_icons = []
+for (var i = 0; i <4; i++) {
+	proposal_icons.push(L.icon({
+	    iconUrl: `data/img/plant-pot${i}0.png`,
+	    shadowUrl:  `data/img/plant-pot${i}1.png`,
 
-    iconSize:     [38, 95], // size of the icon
-    shadowSize:   [50, 64], // size of the shadow
-    iconAnchor:   [19, 95], // point of the icon which will correspond to marker's location
-    shadowAnchor: [4, 62],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-});
+	    iconSize:     [100, 100], // size of the icon
+	    shadowSize:   [100, 100], // size of the shadow
+	    iconAnchor:   [50, 50], // point of the icon which will correspond to marker's location
+	    shadowAnchor: [50, 50],  // the same for the shadow
+	    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+	}));
+}
 
 map.on('click', e=> {
 	var latlng = e.latlng
-  //
-	// `<div  style="display: flex; flex-direction: column; justify-content: center;">
-	// 	<p>Choose the new tree essence :</p>
-	// 	<select></select>
-	// </div>`
-	// var domelem = document.createElement('selectg');
-	// domelem.innerHTML = "Click me";
-	// domelem.onclick = function() {
-	//     alert(this.href);
-	//     // do whatever else you want to do - open accordion etc
-	// };
+	L.marker(latlng, {icon: proposal_icons[3],
+										color: '#33ee44',
+										transparency: 0.6
+									}).addTo(map)
 
 	var popup = L.popup()
-    .setLatLng(latlng)
-    .setContent(['lat', 'lng'].map(e=>latlng[e]).join(', '))
+		.setLatLng(latlng)
+		.setContent(popups.build_missing_tree(map))
     .openOn(map);
 
-	// models.plant_tree_at(latlon)
 })
+var proposal_layer;
 map.on('moveend', e => {
 	var bbox = map.getBounds()
 	var zoom = map.getZoom()
@@ -77,26 +73,53 @@ map.on('moveend', e => {
 		return
 	}
 
+	models.get_trees_proposal(bbox).then(data => {
+		console.log(data)
+		if(proposal_layer)
+			proposal_layer.clearLayers()
+
+		proposal_layer = L.geoJSON(data, {pointToLayer:  (feature, latlng) => {
+						var score = feature.properties.up_vote - feature.properties.down_vote;
+						var i = 0
+						if (score > 2)
+							i = 1
+						else if (score > 4)
+							i = 2
+						else if (score > 6)
+							i = 3
+
+						// feature.properties.
+						return 	L.marker(latlng, {icon: proposal_icons[i],
+																color: '#33ee44',
+																transparency: 0.6
+															})
+				}})
+		proposal_layer.bindPopup(function (layer) {
+				console.log(layer)
+		    return popups.build_vote_popup(map, layer.properties.up_votes)
+		})
+		proposal_layer.addTo(map)
+
+	})
+
 	models.get_trees_geojson(bbox).then(data => {
 		if (tree_layer)
 			tree_layer.clearLayers()
 
 		tree_layer = L.geoJSON(data, {pointToLayer:  (feature, latlng) => {
-		        return L.circleMarker(latlng, geojsonMarkerOptions);
-		    }})
-		tree_layer.bindPopup(function (layer) {
-		    return `
-					<div>
-						<div style="display: flex; flex-direction: row; justify-content: center;">
-							<i class="fa fa-tree fa-2x"></i>
-							<p style="margin: 10px;">${layer.feature.properties.tree_name_fr}</p>
-						</div>
-						<p>${layer.feature.properties.arrond_name}</p>
-						<p>${['lat', 'lon'].map((e, i)=>e + ':' +layer.feature.geometry.coordinates[i]).join(', ')}</p>
+						console.log(feature);
+						// feature.properties.
 
-						<button>Vote for this tree</button>
-					</div>`
-		})
+		        return 	L.marker(latlng, {icon: proposal_icons[3],
+																color: '#33ee44',
+																transparency: 0.6
+															})
+		    }})
+				tree_layer = L.geoJSON(data, {pointToLayer:  (feature, latlng) => {
+								return L.circleMarker(latlng, geojsonMarkerOptions);
+						}})
+
+		tree_layer.bindPopup(layer => popups.build_tree(map, layer))
 		tree_layer.addTo(map)
 	}).catch(console.error);
 })
@@ -116,7 +139,6 @@ const geocoder = require("geocoder/providers/google")
 var address_pin = null;
 document.getElementById('address').onchange = e => {
 	var adress = e.target.value
-	console.log(adress);
 	if (adress == '')
 		return
 
