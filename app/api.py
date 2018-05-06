@@ -48,7 +48,7 @@ def get_trees():
   fc = FeatureCollection([Feature(geometry=Point(doc['loc']), properties=doc) for doc in output])
   return dumps(fc)
 
-@app.route('/upvote/<int:tree_id>', methods=['PUT'])
+@app.route('/upvote/<tree_id>', methods=['PUT'])
 def upvote(tree_id):
     trees = mongo.db.trees
 
@@ -61,7 +61,7 @@ def upvote(tree_id):
     after = trees.find_one({"_id": ObjectId(tree_id)})["up_votes"]
     assert before < after
     # TODO: Check if found and raise exception
-    return "{'success': true}"
+    return '{"success": true}'
 
 @app.route('/downvote/<int:tree_id>', methods=['PUT'])
 def downvote(tree_id):

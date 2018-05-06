@@ -19,23 +19,11 @@ var geojsonMarkerOptions = {
 const constants = require('./constants')
 
 let tree_layer = null
-// trees, {
-//     pointToLayer: function (feature, latlng) {
-//         return L.circleMarker(latlng, geojsonMarkerOptions);
-//     }
-// })
-// tree_layer.setStyle({ color: "#22ff44",weight: 0.5,opacity: 1,})
-// tree_layer.bindPopup(function (layer) {
-//     return layer.feature.properties.type;
-// })
-// tree_layer.addTo(map);
 
 var models = require('./models.js')
 const popups = require('./popup.js')
-// map.on('zoomend', e=> {
-//
-// })
-proposal_icons = []
+
+var proposal_icons = []
 for (var i = 0; i <4; i++) {
 	proposal_icons.push(L.icon({
 	    iconUrl: `data/img/plant-pot${i}0.png`,
@@ -51,10 +39,10 @@ for (var i = 0; i <4; i++) {
 
 map.on('click', e=> {
 	var latlng = e.latlng
-	L.marker(latlng, {icon: proposal_icons[3],
-										color: '#33ee44',
-										transparency: 0.6
-									}).addTo(map)
+	// L.marker(latlng, {icon: proposal_icons[3],
+	// 									color: '#33ee44',
+	// 									transparency: 0.6
+	// 								}).addTo(map)
 
 	var popup = L.popup()
 		.setLatLng(latlng)
@@ -70,46 +58,13 @@ map.on('moveend', e => {
 	if (zoom < 16) {
 		if (tree_layer)
 			tree_layer.clearLayers()
-		return
-	}
+	} else
+		models.get_trees_geojson(bbox).then(data => {
 
-	models.get_trees_proposal(bbox).then(data => {
-		console.log(data)
-		if(proposal_layer)
-			proposal_layer.clearLayers()
-
-		proposal_layer = L.geoJSON(data, {pointToLayer:  (feature, latlng) => {
-						var score = feature.properties.up_vote - feature.properties.down_vote;
-						var i = 0
-						if (score > 2)
-							i = 1
-						else if (score > 4)
-							i = 2
-						else if (score > 6)
-							i = 3
-
-						// feature.properties.
-						return 	L.marker(latlng, {icon: proposal_icons[i],
-																color: '#33ee44',
-																transparency: 0.6
-															})
-				}})
-		proposal_layer.bindPopup(function (layer) {
-				console.log(layer)
-		    return popups.build_vote_popup(map, layer.properties.up_votes)
-		})
-		proposal_layer.addTo(map)
-
-	})
-
-	models.get_trees_geojson(bbox).then(data => {
 		if (tree_layer)
 			tree_layer.clearLayers()
 
 		tree_layer = L.geoJSON(data, {pointToLayer:  (feature, latlng) => {
-						console.log(feature);
-						// feature.properties.
-
 		        return 	L.marker(latlng, {icon: proposal_icons[3],
 																color: '#33ee44',
 																transparency: 0.6
@@ -122,6 +77,35 @@ map.on('moveend', e => {
 		tree_layer.bindPopup(layer => popups.build_tree(map, layer))
 		tree_layer.addTo(map)
 	}).catch(console.error);
+
+	models.get_trees_proposal(bbox).then(data => {
+		if(proposal_layer)
+			proposal_layer.clearLayers()
+
+		proposal_layer = L.geoJSON(data, {pointToLayer:  (feature, latlng) => {
+						var score = feature.properties.up_votes;
+						var i = 0
+						if (score > 6)
+							i = 3
+						else if (score > 4)
+							i = 2
+						else if (score > 2)
+							i = 1
+
+						// feature.properties.
+						return 	L.marker(latlng, {icon: proposal_icons[i],
+																color: '#33ee44',
+																transparency: 0.6
+															})
+				}})
+		proposal_layer.bindPopup(function (layer) {
+		    return popups.build_vote_popup(map, layer.feature.properties.id, layer.feature.properties.up_votes)
+		})
+		proposal_layer.addTo(map)
+
+	})
+
+
 })
 
 map.panTo(new L.LatLng(45.517711,-73.5966052));

@@ -55,7 +55,7 @@ module.exports = (()=>{
         'name_en': essence,
         'name_latin': essence
       }),
-    vote_tree: id => request(constants.SERVER_URL  + 'trees', 'PUT')
+    vote_tree: id => request(constants.SERVER_URL  + 'upvote/' + id, 'PUT')
   }
 
 })()
