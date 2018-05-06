@@ -1,0 +1,76 @@
+<html lang="fr">
+<head>
+	<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+
+		<title>PoTree</title>
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="css/custom.css">
+
+		<!-- Fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> 
+
+
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+                      integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+	              crossorigin=""/>
+                <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+		        integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+	                crossorigin=""></script>
+	        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+                
+</head>
+<body>
+  <div class="container-fluid text-center">
+    <!-- nav bar -->
+    <nav class="navbar navbar-default">
+      <div class="container">
+	<div class="navbar-header navbar-left">
+	  <!-- logo -->
+	  <a href="./index.html"><img class="img-logo" width="100px" src="./images/u1.svg"></a>
+	</div>
+	<div class="navbar-header navbar-right">
+	  <img id="u72_img" class="img " src="./images/u72.jpg" tabindex="0">
+	</div>				
+      </div>
+    </nav>
+    
+    <!-- Map -->
+    <div class="row justify-content-center">
+      <div class="justify-content-center">
+	<div id="mapid" style="width: 90vw; height: 90vh;"/>
+      </div>
+    </div>
+    <div id="map_canvas" style="text-align:center;" class="map_canvas"/>
+
+    <div class="container-fluid">
+      <div class="container">
+        <input id='address' type="text" placeholder="Entrez une adresse"/>
+        <div class="row float-right" >
+          <a href="./index.html" type="button" class="btn btn-outline-success">
+            Accueil
+          </a>
+          &nbsp;
+	  <a href="http://www.irec.net/index.jsp?p=28&f=1608" type="button" class="btn btn-outline-success">
+            Pourquoi planter un arbre?
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- buttons -->
+    <div class="container text-center">
+    </div>
+
+
+    
+  </div>
+  
+  <script src="js/bundle.js" ></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+</body>
+</html>
