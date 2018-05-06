@@ -35,7 +35,7 @@ if __name__ == "__main__":
         'DATE_PLANTATION': 'date_plantation'
     }
 
-    if ville == 'quebec':
+    if ville == 'qc':
         csv_path = "data/vdq-arbrerepertorie.csv"
         dat = pd.read_csv(csv_path)
         long_key = "LONGITUDE"
