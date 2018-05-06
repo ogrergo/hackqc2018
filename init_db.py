@@ -2,7 +2,8 @@ from pymongo import MongoClient, GEO2D
 import pandas as pd
 from utils.entry_status import EntryStatus
 
-ville = 'montreal'
+
+ville = 'quebec'
 
 if __name__ == "__main__":
 

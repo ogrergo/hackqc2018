@@ -5,7 +5,7 @@ from flask_pymongo import PyMongo
 from bson import ObjectId
 from geojson import Feature, Point, FeatureCollection, dumps
 from utils.entry_status import EntryStatus
-
+import json
 
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = 'hackqc-2018'
@@ -34,11 +34,11 @@ def get_trees():
           {
               "loc": tree["loc"],
               "id": str(tree["_id"]),
-              "arrond_name": tree["arrond_nom"],
+              "arrond_name": tree.get("arrond_nom", ""),
               "tree_name_en": tree["essence_ang"],
               "tree_name_fr": tree["essence_fr"],
               "entry_status": tree["entry_status"],
-              "dhp": tree["dhp"],
+              "dhp": tree.get("dhp", ""),
               "up_votes": tree["up_votes"],
               "down_votes": tree["down_votes"]
           })
@@ -59,7 +59,7 @@ def upvote(tree_id):
     after = trees.find_one({"_id": ObjectId(tree_id)})["up_votes"]
     assert before < after
     # TODO: Check if found and raise exception
-    return
+    return "{'success': true}"
 
 @app.route('/downvote/<int:tree_id>', methods=['PUT'])
 def downvote(tree_id):
@@ -74,22 +74,22 @@ def downvote(tree_id):
     after = trees.find_one({"_id": ObjectId(tree_id)})["down_votes"]
     assert before < after
     # TODO: Check if found and raise exception
-    return
+    return "{'success': true}"
 
 @app.route('/trees', methods=['POST'])
 def add_tree_request():
 
     trees = mongo.db.trees
-    lat_long = request.args.get('latlon')
-    name_en = request.args.get('name_en')
-    name_fr = request.args.get('name_fr')
+    print(request.json)
+    lat_long = request.json.get('latlon')
+    name_en = request.json.get('name_en')
+    name_fr = request.json.get('name_fr')
     name_latin = request.args.get('name_latin')
     entry_status = EntryStatus.REQUEST.value
     upvotes = 1
     downvotes = 0
     lat, long = [float(i) for i in lat_long.split(',')]
-
-    trees.insert_one({
+    doc = {
         "loc": [long, lat],
         "essence_ang": name_en,
         "essence_fr": name_fr,
@@ -97,9 +97,12 @@ def add_tree_request():
         "entry_status": entry_status,
         "up_votes": upvotes,
         "down_votes": downvotes
-    })
+    }
+    trees.insert_one(doc)
+    doc['id'] = str(doc['_id'])
+    del doc['_id']
 
-    return
+    return json.dumps(doc)
 
 @app.route('/tree_proposals', methods=['GET'])
 def get_tree_proposals():
