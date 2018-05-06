@@ -1,5 +1,6 @@
 from pymongo import MongoClient, GEO2D
 import pandas as pd
+from tqdm import tqdm
 from utils.entry_status import EntryStatus
 import argparse
 
@@ -7,7 +8,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Populate MongoDB')
     parser.add_argument('-c', '--city', required=True, help='City from which to take data', default='mtl',
-                        choices=['qc', 'mtl', 'rep'])
+                        choices=['qc', 'mtl', 'rep', 'all'])
 
     args = parser.parse_args()
     ville = args.city
@@ -34,7 +35,7 @@ if __name__ == "__main__":
         'DATE_PLANTATION': 'date_plantation'
     }
 
-    if ville == 'quebec' or ville == 'all':
+    if ville == 'quebec':
         csv_path = "data/vdq-arbrerepertorie.csv"
         dat = pd.read_csv(csv_path)
         long_key = "LONGITUDE"
@@ -42,7 +43,7 @@ if __name__ == "__main__":
         headers = ['TYPE_LIEU', 'NOM_LATIN', 'NOM_FRANCAIS', 'DATE_PLANTE', 'LATITUDE', 'LONGITUDE', 'NOM_TOPOGRAPHIE']
         headers_lower = [qc_mtl[h] for h in headers]
         city = 'QC'
-    elif ville == 'rep' or ville == 'all':
+    elif ville == 'rep':
         csv_path = "data/arbres.csv"
         dat = pd.read_csv(csv_path, encoding='latin-1')
         headers = ['ESSENCE_FR', 'ESSENCE_LATIN', 'Latitude', 'Longitude', 'DATE_PLANTATION']
@@ -62,14 +63,12 @@ if __name__ == "__main__":
 
     dat = dat.dropna(subset=[long_key, lat_key])
 
-    db.trees.insert_many([
-        {'loc': list(long_lat),
-         'up_votes': 0,
-         'down_votes': 0,
-         'entry_status': EntryStatus.TRUE_POSITIVE.value,
-         'city': city,
-            **dict(zip(headers_lower, row))
-        }
-        for row, long_lat in zip(dat[headers].values, dat[[long_key, lat_key]].values)])
-
-
+    for row, long_lat in tqdm(zip(dat[headers].values, dat[[long_key, lat_key]].values)):
+        db.trees.insert_one(
+                {'loc': list(long_lat),
+                'up_votes': 0,
+                'down_votes': 0,
+                 'city': city,
+                'entry_status': EntryStatus.TRUE_POSITIVE.value,
+                **dict(zip(headers_lower, row))
+                })

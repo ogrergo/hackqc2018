@@ -21,12 +21,14 @@ def get_trees():
   lat_sw, long_sw = [float(i) for i in lat_long_sw.split(',')]
   lat_ne, long_ne = [float(i) for i in lat_long_ne.split(',')]
 
-  selected_trees = trees.find({'loc': {'$geoWithin': {
-      '$box': [
-          [long_ne, lat_ne],
-          [long_sw, lat_sw]
-      ]
-  }}})
+  selected_trees = trees.find({'loc': {
+      '$geoWithin': {
+          '$box': [
+              [long_ne, lat_ne],
+              [long_sw, lat_sw]
+          ]
+      }},
+      'entry_status': {'$ne': EntryStatus.REQUEST.value}})
 
   output = []
   for tree in selected_trees:
