@@ -101,5 +101,45 @@ def add_tree_request():
 
     return
 
+@app.route('/tree_proposals', methods=['GET'])
+def get_tree_proposals():
+    trees = mongo.db.trees
+
+    lat_long_sw = request.args.get('latlon_sw')
+    lat_long_ne = request.args.get('latlon_ne')
+
+    if lat_long_ne and lat_long_sw:
+        lat_sw, long_sw = [float(i) for i in lat_long_sw.split(',')]
+        lat_ne, long_ne = [float(i) for i in lat_long_ne.split(',')]
+        proposals = trees.find({'loc':
+            {'$geoWithin':{
+                '$box': [
+                    [long_ne, lat_ne],
+                    [long_sw, lat_sw]
+                ]
+            }},
+            "entry_status": EntryStatus.REQUEST.value
+        })
+    else:
+        proposals = trees.find({"entry_status": EntryStatus.REQUEST.value})
+
+    res = []
+
+    for tree in proposals:
+        res.append({
+              "loc": tree["loc"],
+              "id": str(tree["_id"]),
+              "arrond_name": tree["arrond_nom"],
+              "tree_name_en": tree["essence_ang"],
+              "tree_name_fr": tree["essence_fr"],
+              "entry_status": tree["entry_status"],
+              "dhp": tree["dhp"],
+              "up_votes": tree["up_votes"],
+              "down_votes": tree["down_votes"]
+          })
+
+    fc = FeatureCollection([Feature(geometry=Point(doc['loc']), properties=doc) for doc in res])
+    return dumps(fc)
+
 if __name__ == '__main__':
     app.run(debug=True)
